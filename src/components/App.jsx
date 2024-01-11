@@ -18,14 +18,14 @@ export default class App extends Component {
   };
 
   fetchImagesAndUpdateState = async () => {
-    const { searchWord, page, per_page } = this.state;
+    const { images, searchWord, page, per_page } = this.state;
 
     try {
       const searchImages = await api.fetchImages(searchWord, page, per_page);
 
-      this.setState(prevState => ({
-        images: [...prevState.images, ...searchImages.hits],
-      }));
+      this.setState({
+        images: [...images, ...searchImages.hits],
+      });
       this.updateLimit(searchImages.totalHits);
     } catch (error) {
       this.setState({ error });
