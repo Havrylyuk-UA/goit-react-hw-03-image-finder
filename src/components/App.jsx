@@ -22,9 +22,11 @@ export default class App extends Component {
 
     try {
       const searchImages = await api.fetchImages(searchWord, page, per_page);
+
       this.setState(prevState => ({
-        images: [...prevState.images, ...searchImages],
+        images: [...prevState.images, ...searchImages.hits],
       }));
+      this.updateLimit(searchImages.totalHits);
     } catch (error) {
       this.setState({ error });
     } finally {
@@ -32,21 +34,30 @@ export default class App extends Component {
     }
   };
 
-  async componentDidMount() {
-    this.setState({ isLoading: true });
-    await this.fetchImagesAndUpdateState();
+  updateLimit = totalHits => {
+    const { page, per_page } = this.state;
+    const limit = Math.ceil(totalHits / per_page);
+
+    this.setState({ search: page < limit });
+  };
+
+  async componentDidUpdate(prevProps, prevState) {
+    const { page, searchWord } = this.state;
+
+    if (page !== prevState.page || searchWord !== prevState.searchWord) {
+      await this.fetchImagesAndUpdateState();
+    }
   }
 
   handleSearchImage = searchItem => {
-    const { word } = searchItem;
-    this.setState({ searchWord: word, page: 1, images: [] }, () => {
+    this.setState({ searchWord: searchItem, page: 1, images: [] }, () => {
       this.fetchImagesAndUpdateState();
     });
   };
 
   handleAddPage = () => {
     this.setState(
-      prevState => ({ page: prevState.page + 1 }),
+      prevState => ({ page: prevState.page + 1, isLoading: true }),
       () => {
         this.fetchImagesAndUpdateState();
       }
@@ -54,25 +65,29 @@ export default class App extends Component {
   };
 
   render() {
-    const { images, isLoading, error } = this.state;
+    const { images, isLoading, error, search } = this.state;
 
     return (
       <div className="App">
         <Searchbar handleSearchImage={this.handleSearchImage} />
-        {error && <p>Whoops, something went wrong: {error.message}</p>}
+        {error && (
+          <p style={{ textAlign: 'center' }}>
+            Whoops, something went wrong: {error.message}
+          </p>
+        )}
         {isLoading && <p style={{ textAlign: 'center' }}>Loading...</p>}
         <ImageGallery>
           {images.length > 0 &&
-            images.map(({ id, webformatURL, largeImageURL, tags }) => (
+            images.map(({ webformatURL, largeImageURL, tags }, i) => (
               <ImageGalleryItem
-                key={id}
+                key={i}
                 img={webformatURL}
                 largeImg={largeImageURL}
                 alt={tags}
               />
             ))}
         </ImageGallery>
-        {images.length > 0 && <Button handleAddPage={this.handleAddPage} />}
+        {search && <Button handleAddPage={this.handleAddPage} />}
       </div>
     );
   }

@@ -10,17 +10,14 @@ export default class Searchbar extends Component {
     };
   }
 
-  handlePushWord = e => {
+  handleSearch = e => {
     e.preventDefault();
     const { handleSearchImage } = this.props;
-
     const { word } = this.state;
 
-    const searchItem = {
-      word: word,
-    };
-
-    handleSearchImage(searchItem);
+    if (word.trim() !== '') {
+      handleSearchImage(word);
+    }
   };
 
   handleChangeWord = e => {
@@ -30,7 +27,7 @@ export default class Searchbar extends Component {
   render() {
     return (
       <header className="Searchbar">
-        <form className="SearchForm" onSubmit={this.handlePushWord}>
+        <form className="SearchForm" onSubmit={this.handleSearch}>
           <button type="submit" className="SearchForm-button">
             <img
               src={searchImg}
