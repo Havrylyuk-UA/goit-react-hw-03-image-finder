@@ -12,12 +12,12 @@ export default class Searchbar extends Component {
 
   handleSearch = e => {
     e.preventDefault();
+    const form = document.querySelector('form');
     const { handleSearchImage } = this.props;
     const { word } = this.state;
 
-    if (word.trim() !== '') {
-      handleSearchImage(word);
-    }
+    handleSearchImage(word.trim());
+    form.reset();
   };
 
   handleChangeWord = e => {

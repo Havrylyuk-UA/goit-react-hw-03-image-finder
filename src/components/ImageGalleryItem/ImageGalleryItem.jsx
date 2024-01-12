@@ -1,7 +1,12 @@
-const ImageGalleryItem = ({ img, largeImg, alt }) => {
+const ImageGalleryItem = ({ img, largeImg, alt, showModal }) => {
   return (
     <li className="ImageGalleryItem">
-      <img src={img} alt={alt} className="ImageGalleryItem-image" />
+      <img
+        src={img}
+        alt={alt}
+        className="ImageGalleryItem-image"
+        onClick={() => showModal({ largeImg, alt })}
+      />
     </li>
   );
 };
