@@ -70,8 +70,8 @@ export default class App extends Component {
   }
 
   handleSearchImage = searchItem => {
-    if (searchItem === this.state.searchWord) {
-      this.setState({ canFind: true, search: null });
+    if (searchItem === '') {
+      return this.setState({ canFind: true, search: null, images: [] });
     }
     this.setState({ searchWord: searchItem, page: 1, images: [] });
   };

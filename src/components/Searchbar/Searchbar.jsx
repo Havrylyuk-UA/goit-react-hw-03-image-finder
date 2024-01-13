@@ -12,12 +12,15 @@ export default class Searchbar extends Component {
 
   handleSearch = e => {
     e.preventDefault();
-    const form = document.querySelector('form');
     const { handleSearchImage } = this.props;
     const { word } = this.state;
 
     handleSearchImage(word.trim());
-    form.reset();
+    this.clearForm();
+  };
+
+  clearForm = () => {
+    this.setState({ word: '' });
   };
 
   handleChangeWord = e => {
@@ -45,6 +48,7 @@ export default class Searchbar extends Component {
             autoFocus
             placeholder="Search images and photos"
             onChange={this.handleChangeWord}
+            value={this.state.word}
           />
         </form>
       </header>
